@@ -12,7 +12,7 @@ std::vector<Vector3f> CommonFixture::getCubePoints1()
 	return cubePoints;
 }
 
-CommonFixture::AffineTransform CommonFixture::getCameraPose1()
+AffineTransform CommonFixture::getCameraPose1()
 {
   Vector3f cameraTranslation(5.0,6.0,7.0);
 	Matrix3f cameraRotation;

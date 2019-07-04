@@ -1,3 +1,5 @@
+#pragma once
+
 #include "vslamTypes.h"
 
 namespace vslam {
