@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "CommonFixture.h"
 
 std::vector<Vector3f> CommonFixture::getCubePoints1()
@@ -12,13 +14,23 @@ std::vector<Vector3f> CommonFixture::getCubePoints1()
 	return cubePoints;
 }
 
-AffineTransform CommonFixture::getCameraPose1()
+AffineTransform CommonFixture::getCameraPoseViewCenter(float radius, float altitude, float azimuth)
 {
-  Vector3f cameraTranslation(5.0,6.0,7.0);
-	Matrix3f cameraRotation;
-  cameraRotation = AngleAxisf(0.25*M_PI, Vector3f::UnitZ()) 
-                 * AngleAxisf(-0.75*M_PI, Vector3f::UnitY())
-		             * AngleAxisf(0.5*M_PI, Vector3f::UnitZ());
-	AffineTransform cameraPose1 = Translation3f(cameraTranslation) * cameraRotation; 
-	return cameraPose1;	
+  Vector3f rotAxis = AngleAxisf(azimuth, Vector3f::UnitZ()) * Vector3f::UnitY();
+  Vector3f direction = AngleAxisf(altitude, rotAxis) * Vector3f::UnitZ();
+  Vector3f translation = radius * direction;
+  Vector3f rot_z = -direction;
+  Vector3f rot_x = rot_z.cross(Vector3f::UnitZ());
+  Vector3f rot_y = rot_z.cross(rot_x);
+  Matrix3f rotation;
+  rotation.block<3,1>(0,0) = rot_x;
+  rotation.block<3,1>(0,1) = rot_y;
+  rotation.block<3,1>(0,2) = rot_z;
+  return Translation3f(translation) * rotation;  
+}
+
+CameraIntrinsics CommonFixture::getStandardIntrinsics()
+{
+  CameraIntrinsics intrinsics = {1.0,1.0};
+  return intrinsics;
 }
