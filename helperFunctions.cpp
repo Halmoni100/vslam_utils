@@ -23,4 +23,25 @@ namespace vslam {
     return imagePoints; 
   }
 
+  float getRotationAngle(const Matrix3f& rot)
+  {
+    return acos((rot.trace() - 1) / 2.0);
+  }
+
+  float getAngleDifference(const Matrix3f& rot1, const Matrix3f& rot2)
+  {
+    return getRotationAngle(rot2.transpose() * rot1);
+  }
+
+  bool posesClose(AffineTransform pose1, AffineTransform pose2, float rotAngleTolerance, float translationTolerance)
+  {
+    float rotAngleDifference = vslam::getAngleDifference(pose1.rotation(), pose2.rotation());
+    if (rotAngleDifference > rotAngleTolerance)
+      return false;
+    float translationDistance = (pose2.translation() - pose1.translation()).norm();
+    if (translationDistance > translationTolerance)
+      return false;
+    return true;
+  }
+
 } // namespace vslam
