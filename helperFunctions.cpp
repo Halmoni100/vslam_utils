@@ -44,4 +44,31 @@ namespace vslam {
     return true;
   }
 
+  Vector3f getProjection(Vector3f a, Vector3f b)
+  {
+    return (a.dot(b) / pow(a.norm(),2)) * a;
+  }
+
+  float getAngle(Vector3f a, Vector3f b)
+  {
+    return acos( a.dot(b) / (a.norm() * b.norm()) );
+  }
+
+  std::string to_string(AffineTransform transform)
+  {
+    std::stringstream ss;
+    Vector3f translation = transform.translation();
+    AngleAxisf rotation(transform.rotation());
+    ss << "Rotation:\n";
+    ss << "\taxis: [" << rotation.axis()(0) << "," << rotation.axis()(1) << "," << rotation.axis()(2) << "]\n";
+    ss << "\tangle: " << rotation.angle() << "\n";
+    ss << "Translation: [" <<  translation(0) << "," << translation(1) << "," << translation(2) << "]\n";
+    return ss.str();
+  }
+
+  bool equal(float a, float b, float tolerance)
+  {
+    return abs(a - b) < tolerance;
+  }
+
 } // namespace vslam
